@@ -1,0 +1,118 @@
+/* ==========================================================
+   layout.css — encabezado, pie, contenedores y grids (mobile-first)
+   ========================================================== */
+
+/* ---------- Encabezado ---------- */
+.encabezado {
+  background: var(--color-superficie);
+  border-bottom: 2px solid var(--color-linea);
+}
+.encabezado .contenedor { width: min(100% - 2rem, 90rem); }
+.encabezado__fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding-block: 0.75rem;
+}
+.navegacion { order: 3; width: 100%; }
+.navegacion ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.navegacion a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding-inline: 0.25rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.navegacion a:hover { text-decoration: underline; }
+.navegacion a[aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-color: var(--color-acento);
+  text-decoration-thickness: 4px;
+}
+
+/* ---------- Contenido principal ---------- */
+.principal { padding-block: 1.5rem 3rem; }
+.pila {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-l);
+}
+.pila--estrecha { gap: var(--espacio-m); }
+.centrado { align-items: center; }
+
+/* Grids */
+.lista-vacantes {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--espacio-l);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lista-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-m);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.rejilla-campos {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--espacio-m) var(--espacio-l);
+}
+.rejilla-numeros {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--espacio-m);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dos-columnas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--espacio-l);
+}
+.dos-columnas > * { min-width: 0; }
+.formulario-ancho { width: 100%; max-width: 60rem; }
+.formulario-angosto { width: 100%; max-width: 35rem; }
+
+/* ---------- Pie de página ---------- */
+.pie {
+  padding-block: var(--espacio-xl);
+  text-align: center;
+  background: var(--color-superficie);
+  border-top: 2px solid var(--color-linea);
+}
+.pie__fila { display: flex; flex-direction: column; gap: 0.25rem; align-items: center; }
+
+/* ---------- Tablet (768 px) ---------- */
+@media (min-width: 48rem) {
+  .principal { padding-block: 3rem 4rem; }
+  .pila { gap: var(--espacio-xl); }
+  .lista-vacantes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rejilla-campos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rejilla-numeros { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* ---------- Escritorio (1024 px) ---------- */
+@media (min-width: 64rem) {
+  .encabezado__fila { flex-wrap: nowrap; gap: 2rem; padding-block: 1rem; }
+  .navegacion { order: 2; width: auto; margin-left: auto; }
+  .navegacion ul { gap: 0 1.75rem; }
+  .encabezado .boton--ayuda { order: 3; }
+  .dos-columnas--lateral { grid-template-columns: minmax(0, 1fr) 26rem; gap: var(--espacio-xxl); align-items: start; }
+  .pie__fila { flex-direction: row; justify-content: center; gap: 1.5rem; }
+}

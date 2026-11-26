@@ -1,0 +1,201 @@
+/* ==========================================================
+   componentes.css — piezas reutilizables (futuros componentes de React)
+   boton · tarjeta-vacante · tarjeta-solicitud · etiqueta · etiqueta-estatus
+   campo-formulario · panel · dato · aviso · logotipo
+   ========================================================== */
+
+/* ---------- Logotipo ---------- */
+.logotipo { display: inline-flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+.logotipo__texto {
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  color: var(--color-texto);
+}
+
+/* ---------- Botones (mínimo 44 px de alto; aquí 52 px) ---------- */
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  min-height: var(--alto-toque);
+  min-width: 2.75rem;
+  padding: 0.75rem 1.5rem;
+  font: inherit;
+  font-size: var(--texto-grande);
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  color: var(--color-texto);
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: var(--radio);
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+/* Al pasar el cursor, los colores se invierten (fondo ↔ texto/borde) */
+.boton--primario { background: var(--color-primario); color: #fff; border-color: var(--color-primario); }
+.boton--primario:hover { background: #fff; color: var(--color-primario); }
+.boton--secundario { background: var(--color-superficie); color: var(--color-primario); border-color: var(--color-primario); }
+.boton--secundario:hover { background: var(--color-primario); color: #fff; }
+.boton--acento, .boton--ayuda { background: var(--color-acento); color: var(--color-primario); border-color: var(--color-acento); }
+.boton--acento:hover, .boton--ayuda:hover { background: var(--color-primario); color: var(--color-acento); border-color: var(--color-primario); }
+.boton--ayuda:hover svg path { stroke: var(--color-acento); }
+.boton--peligro { background: var(--color-superficie); color: var(--color-error); border-color: var(--color-error); }
+.boton--peligro:hover { background: var(--color-error); color: #fff; }
+.boton--bloque { width: 100%; }
+.boton[aria-pressed="true"] { background: var(--color-primario); color: #fff; border-color: var(--color-primario); }
+.boton[aria-pressed="true"]:hover { background: #fff; color: var(--color-primario); }
+.boton--ayuda { padding-inline: 1rem; }
+.boton--ayuda svg { flex: none; }
+.texto-largo { display: none; }
+
+.grupo-botones { display: flex; flex-wrap: wrap; gap: var(--espacio-s); }
+.grupo-botones--columna { flex-direction: column; }
+.grupo-botones--columna > .boton { width: 100%; }
+
+/* ---------- Panel (tarjeta blanca genérica) ---------- */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-m);
+  padding: var(--espacio-l);
+  background: var(--color-superficie);
+  border: 2px solid var(--color-linea);
+  border-radius: var(--radio-l);
+}
+
+/* ---------- Tarjeta de vacante ---------- */
+.tarjeta-vacante {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-s);
+  height: 100%;
+  padding: var(--espacio-l);
+  background: var(--color-superficie);
+  border: 2px solid var(--color-linea);
+  border-radius: var(--radio-l);
+}
+.tarjeta-vacante__empresa { font-weight: 600; color: var(--color-texto-suave); }
+.tarjeta-vacante__datos { display: flex; flex-direction: column; gap: 0.25rem; margin: 0; padding: 0; list-style: none; color: var(--color-texto-suave); }
+.tarjeta-vacante .boton { margin-top: auto; }
+
+/* ---------- Etiquetas ---------- */
+.etiquetas { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.etiqueta, .etiqueta-estatus {
+  display: inline-block;
+  padding: 0.25rem 0.875rem;
+  font-size: var(--texto-base);
+  font-weight: 600;
+  line-height: 1.4;
+  border-radius: var(--radio-s);
+}
+.etiqueta { background: var(--color-durazno); color: var(--color-primario); }
+.etiqueta-estatus--revision { background: var(--color-durazno); color: var(--color-primario); }
+.etiqueta-estatus--aceptada, .etiqueta-estatus--activa { background: var(--color-exito-fondo); color: var(--color-exito); }
+.etiqueta-estatus--rechazada, .etiqueta-estatus--cerrada { background: var(--color-gris); color: var(--color-primario); }
+
+/* ---------- Tarjeta de solicitud / vacante de empresa / candidato ---------- */
+.tarjeta-solicitud {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-m);
+  padding: var(--espacio-l);
+  background: var(--color-superficie);
+  border: 2px solid var(--color-linea);
+  border-radius: var(--radio-l);
+}
+.tarjeta-solicitud__datos { display: flex; flex-direction: column; gap: 0.375rem; min-width: 0; }
+.tarjeta-solicitud__subtitulo { font-weight: 600; color: var(--color-texto-suave); }
+.tarjeta-solicitud__estatus { align-self: flex-start; }
+
+/* ---------- Formularios: campo-formulario ---------- */
+.campo { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
+.campo--ancho { grid-column: 1 / -1; }
+.campo label, .campo__etiqueta { font-weight: 600; }
+.campo input,
+.campo select,
+.campo textarea {
+  width: 100%;
+  min-height: var(--alto-toque);
+  padding: 0.75rem 1rem;
+  font: inherit;
+  color: var(--color-texto);
+  background-color: var(--color-superficie);
+  border: 2px solid var(--color-borde);
+  border-radius: 0.625rem;
+}
+.campo textarea { min-height: 8rem; resize: vertical; }
+.campo select {
+  appearance: none;
+  padding-right: 3rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='m6 9 6 6 6-6' stroke='%23202945' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.25rem;
+}
+.campo ::placeholder { color: var(--color-texto-suave); opacity: 1; }
+.campo__ayuda { color: var(--color-texto-suave); }
+
+.grupo-campos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-m);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.grupo-campos legend {
+  padding: 0;
+  margin-bottom: var(--espacio-s);
+  font-family: var(--fuente-titulos);
+  font-size: var(--texto-h3);
+  font-weight: 700;
+}
+
+.casilla { display: flex; align-items: center; gap: 0.75rem; }
+.casilla input { flex: none; width: 2rem; height: 2rem; margin: 0; accent-color: var(--color-primario); }
+.casilla label { font-size: var(--texto-grande); }
+
+/* ---------- Buscador y filtros ---------- */
+.buscador { display: grid; grid-template-columns: 1fr; gap: var(--espacio-m); padding: var(--espacio-m); background: var(--color-superficie); border: 2px solid var(--color-linea); border-radius: var(--radio-l); }
+.filtros { display: flex; flex-wrap: wrap; gap: var(--espacio-s); margin: 0; padding: 0; list-style: none; }
+
+/* ---------- Datos (resumen y números) ---------- */
+.dato { display: flex; flex-direction: column; gap: 0.125rem; }
+.dato dt { font-weight: 600; color: var(--color-texto-suave); }
+.dato dd { font-size: var(--texto-grande); }
+.lista-datos { display: flex; flex-direction: column; gap: var(--espacio-m); }
+.numero { padding: var(--espacio-m) var(--espacio-l); background: var(--color-superficie); border: 2px solid var(--color-linea); border-radius: var(--radio-l); }
+.numero__valor { display: block; font-family: var(--fuente-titulos); font-size: var(--texto-h1); font-weight: 700; line-height: 1.3; }
+.numero__texto { font-weight: 600; color: var(--color-texto-suave); }
+
+/* ---------- Avisos ---------- */
+.aviso { padding: var(--espacio-m); background: var(--color-azul-claro); border-radius: var(--radio-s); }
+.aviso--exito { background: var(--color-exito-fondo); color: var(--color-exito); }
+
+/* ---------- Enlace de regreso ---------- */
+.enlace-volver { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: 600; }
+
+/* ---------- Icono de éxito ---------- */
+.icono-exito { display: block; margin-inline: auto; }
+
+/* ---------- Tablet y escritorio ---------- */
+@media (min-width: 48rem) {
+  .panel { padding: var(--espacio-xl); }
+  .buscador { padding: var(--espacio-l); }
+  .tarjeta-solicitud { flex-direction: row; align-items: center; gap: var(--espacio-l); }
+  .tarjeta-solicitud__datos { flex: 1; }
+  .tarjeta-solicitud__estatus { align-self: center; }
+  .tarjeta-solicitud .grupo-botones { flex-wrap: nowrap; }
+  .logotipo__texto { font-size: 1.875rem; }
+}
+@media (min-width: 64rem) {
+  .buscador { grid-template-columns: 1.4fr 1fr 1fr auto; align-items: end; }
+  .texto-largo { display: inline; }
+  .texto-corto { display: none; }
+  .boton--ayuda { padding-inline: 1.5rem; }
+}

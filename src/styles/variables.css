@@ -1,0 +1,50 @@
+/* ==========================================================
+   variables.css — design tokens (copiados de los estilos de Figma)
+   Archivo Figma: AMAC - Prototipo UI Plataforma de Empleo
+   ========================================================== */
+:root {
+  /* Colores (estilos de color de Figma: Color/...) */
+  --color-primario: #202945;          /* navy (marca) */
+  --color-primario-oscuro: #141a30;   /* hover del botón primario */
+  --color-acento: #ff815c;            /* coral (marca) */
+  --color-acento-oscuro: #f26a43;     /* hover del botón de acento */
+  --color-texto: #202945;
+  --color-texto-suave: #454b63;       /* texto secundario, 9:1 sobre blanco */
+  --color-fondo: #f4f5f8;
+  --color-superficie: #ffffff;
+  --color-borde: #5b627d;             /* borde de campos, 6:1 sobre blanco */
+  --color-linea: #d5d8e2;             /* divisores y bordes de tarjetas */
+  --color-azul-claro: #cae4ef;
+  --color-durazno: #fddaad;
+  --color-gris: #e6e8ef;
+  --color-exito: #1b5e34;
+  --color-exito-fondo: #dcf1e3;
+  --color-error: #a61b1b;
+  --color-error-fondo: #fbe4e1;
+
+  /* Tipografía (estilos de texto de Figma: Titulo/..., Cuerpo/...) */
+  --fuente-base: "Work Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --fuente-titulos: "Libre Baskerville", Baskerville, Georgia, serif;
+  --texto-base: 1.125rem;   /* 18 px — mínimo permitido */
+  --texto-grande: 1.25rem;  /* 20 px */
+  --texto-h3: 1.375rem;     /* 22 px */
+  --texto-h2: 1.75rem;      /* 28 px */
+  --texto-h1: 1.875rem;     /* 30 px en celular */
+
+  /* Espaciados, radios y tamaños táctiles */
+  --espacio-xs: 0.5rem;
+  --espacio-s: 0.75rem;
+  --espacio-m: 1rem;
+  --espacio-l: 1.5rem;
+  --espacio-xl: 2rem;
+  --espacio-xxl: 3rem;
+  --radio: 0.75rem;
+  --radio-s: 0.5rem;
+  --radio-l: 1rem;
+  --alto-toque: 3.25rem;    /* 52 px: botones y campos (mínimo exigido 44 px) */
+  --ancho-contenedor: 75rem; /* 1200 px */
+}
+
+@media (min-width: 48rem) {
+  :root { --texto-h1: 2.5rem; /* 40 px en escritorio */ }
+}
