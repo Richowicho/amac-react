@@ -36,12 +36,14 @@ export default function DetalleVacante() {
     setPostulando(false)
 
     if (error?.code === '23505') {
-      setMensaje('Ya te postulaste a esta vacante.')
-    } else if (error) {
-      setMensaje('Tu registro aún no ha sido aprobado por AMAC. Por favor espera.')
-    } else {
-      setMensaje('¡Listo! Tu solicitud fue enviada.')
-    }
+  setMensaje('Ya te postulaste a esta vacante.')
+} else if (error?.code === '42501') {
+  setMensaje('Tu registro aún no ha sido aprobado por AMAC o tu cuenta no es de candidato.')
+} else if (error) {
+  setMensaje(`Error al postularse: ${error.message}`)
+} else {
+  setMensaje('¡Listo! Tu solicitud fue enviada.')
+}
   }
 
   if (cargando) return <div className="contenedor"><p role="status">Cargando detalles...</p></div>
