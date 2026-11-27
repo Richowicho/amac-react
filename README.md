@@ -133,3 +133,5 @@ Cada `git push` a `main` publica una versión nueva. Las variables `VITE_SUPABAS
 - Si la base rechaza un cambio (cancelar, pausar, cerrar, cambiar estatus), ahora se muestra el error.
 - La búsqueda ya no se rompe con comas ni paréntesis.
 - Quitamos archivos que sobraban de la plantilla de Vite y agregamos favicon y `.env.example`.
+
+Usamos Claude para ayudarnos a organizar nuestra reporte del README.
