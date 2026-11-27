@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import CampoFormulario from '../components/CampoFormulario'
+import Mensaje from '../components/Mensaje'
 
 export default function RegistroEmpresa() {
   const [nombre, setNombre] = useState('')
@@ -19,14 +21,7 @@ export default function RegistroEmpresa() {
     const { error } = await supabase.auth.signUp({
       email: correo.trim(),
       password: clave,
-      options: {
-        data: {
-          rol: 'empresa',
-          nombre: nombre.trim(),
-          giro,
-          telefono: telefono.trim(),
-        },
-      },
+      options: { data: { rol: 'empresa', nombre: nombre.trim(), giro, telefono: telefono.trim() } },
     })
     setCargando(false)
     if (error) {
@@ -42,39 +37,24 @@ export default function RegistroEmpresa() {
         <h1 id="h-emp">Registre su empresa</h1>
         <p className="texto-grande texto-suave">Publique vacantes y encuentre personal con experiencia. Los campos con * son obligatorios.</p>
 
-        {mensaje && <p role="alert" style={{ color: '#b00020', fontWeight: 600 }}>{mensaje}</p>}
+        <Mensaje tipo="error">{mensaje}</Mensaje>
 
         <form className="pila" onSubmit={manejarRegistro}>
           <fieldset className="grupo-campos">
             <legend>Datos de la empresa</legend>
             <div className="rejilla-campos">
-              <div className="campo">
-                <label htmlFor="empresa">Nombre de la empresa <span aria-hidden="true">*</span></label>
-                <input id="empresa" type="text" placeholder="Ejemplo: Hotel Casa Real" required value={nombre} onChange={(e) => setNombre(e.target.value)} />
-              </div>
-              <div className="campo">
-                <label htmlFor="giro">Giro o sector <span aria-hidden="true">*</span></label>
-                <select id="giro" required value={giro} onChange={(e) => setGiro(e.target.value)}>
-                  <option value="">Elija una opción</option>
-                  <option value="Servicios">Servicios</option>
-                  <option value="Comercio">Comercio</option>
-                  <option value="Salud">Salud</option>
-                  <option value="Educación">Educación</option>
-                  <option value="Otro">Otro</option>
-                </select>
-              </div>
-              <div className="campo">
-                <label htmlFor="telefono">Teléfono <span aria-hidden="true">*</span></label>
-                <input id="telefono" type="tel" required value={telefono} onChange={(e) => setTelefono(e.target.value)} />
-              </div>
-              <div className="campo">
-                <label htmlFor="correo">Correo electrónico <span aria-hidden="true">*</span></label>
-                <input id="correo" type="email" placeholder="empresa@correo.com" required value={correo} onChange={(e) => setCorreo(e.target.value)} />
-              </div>
-              <div className="campo campo--ancho">
-                <label htmlFor="clave">Contraseña <span aria-hidden="true">*</span></label>
-                <input id="clave" type="password" minLength={6} required value={clave} onChange={(e) => setClave(e.target.value)} />
-              </div>
+              <CampoFormulario id="empresa" etiqueta="Nombre de la empresa" requerido type="text" placeholder="Ejemplo: Hotel Casa Real" autoComplete="organization" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+              <CampoFormulario id="giro" etiqueta="Giro o sector" requerido como="select" value={giro} onChange={(e) => setGiro(e.target.value)}>
+                <option value="">Elija una opción</option>
+                <option value="Servicios">Servicios</option>
+                <option value="Comercio">Comercio</option>
+                <option value="Salud">Salud</option>
+                <option value="Educación">Educación</option>
+                <option value="Otro">Otro</option>
+              </CampoFormulario>
+              <CampoFormulario id="telefono" etiqueta="Teléfono" requerido type="tel" autoComplete="tel" value={telefono} onChange={(e) => setTelefono(e.target.value)} />
+              <CampoFormulario id="correo" etiqueta="Correo electrónico" requerido type="email" placeholder="empresa@correo.com" autoComplete="email" value={correo} onChange={(e) => setCorreo(e.target.value)} />
+              <CampoFormulario id="clave" etiqueta="Contraseña" requerido ancho ayuda="Mínimo 6 caracteres." type="password" minLength={6} autoComplete="new-password" value={clave} onChange={(e) => setClave(e.target.value)} />
             </div>
           </fieldset>
 

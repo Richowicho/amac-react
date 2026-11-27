@@ -2,11 +2,14 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
+import EtiquetaEstatus from '../components/EtiquetaEstatus'
+import Mensaje from '../components/Mensaje'
 
 export default function MisSolicitudes() {
   const { sesion } = useAuth()
   const [solicitudes, setSolicitudes] = useState([])
   const [cargando, setCargando] = useState(true)
+  const [error, setError] = useState('')
 
   async function cargar() {
     if (!sesion?.user.id) return
@@ -25,21 +28,22 @@ export default function MisSolicitudes() {
   }, [sesion?.user.id])
 
   async function cancelar(solicitud) {
-    if (!window.confirm('¿Seguro que quieres cancelar esta solicitud?')) return
-    await supabase.from('solicitudes').update({ estatus: 'Cancelada' }).eq('id', solicitud.id)
+    if (!window.confirm('¿Seguro que quieres cancelar esta solicitud?')) return // RF-006: pedir confirmación
+    setError('')
+    const { error: errorUpdate } = await supabase.from('solicitudes').update({ estatus: 'Cancelada' }).eq('id', solicitud.id)
+    if (errorUpdate) {
+      // La política RLS solo deja cancelar solicitudes "Enviada" o "En revisión"
+      setError('No se pudo cancelar la solicitud. Puede que ya haya sido resuelta por la empresa.')
+    }
     cargar()
-  }
-
-  function claseEstatus(estatus) {
-    if (estatus === 'Aceptada') return 'etiqueta-estatus--aceptada'
-    if (estatus === 'Rechazada' || estatus === 'Cancelada') return 'etiqueta-estatus--rechazada'
-    return 'etiqueta-estatus--revision'
   }
 
   return (
     <div className="contenedor pila">
       <h1>Mis solicitudes</h1>
       <p className="texto-grande texto-suave">Aquí ve a qué vacantes se postuló y cómo va cada una.</p>
+
+      <Mensaje tipo="error">{error}</Mensaje>
 
       {cargando ? (
         <p role="status">Cargando solicitudes...</p>
@@ -57,9 +61,7 @@ export default function MisSolicitudes() {
                     Postulada el {new Date(s.creada_en).toLocaleDateString('es-MX')}
                   </p>
                 </div>
-                <p className={`etiqueta-estatus ${claseEstatus(s.estatus)} tarjeta-solicitud__estatus`}>
-                  <span className="solo-lectores">Estatus: </span>{s.estatus}
-                </p>
+                <EtiquetaEstatus valor={s.estatus} />
                 <div className="grupo-botones">
                   {s.vacante?.id && (
                     <Link className="boton boton--secundario" to={`/vacantes/${s.vacante.id}`}>

@@ -199,3 +199,11 @@
   .texto-corto { display: none; }
   .boton--ayuda { padding-inline: 1.5rem; }
 }
+
+/* ---------- Mensajes (error / éxito / información) ---------- */
+.mensaje { font-weight: 600; }
+.mensaje--error { color: var(--color-error); }
+.mensaje--exito { color: var(--color-exito); }
+.mensaje--info { color: var(--color-texto); }
+
+.separador { width: 100%; margin: 0; border: 0; border-top: 2px solid var(--color-linea); }

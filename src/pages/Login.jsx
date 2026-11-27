@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import CampoFormulario from '../components/CampoFormulario'
+import Mensaje from '../components/Mensaje'
 
 export default function Login() {
   const [correo, setCorreo] = useState('')
@@ -13,12 +15,10 @@ export default function Login() {
     e.preventDefault()
     setMensaje('')
     setCargando(true)
-    const { error } = await supabase.auth.signInWithPassword({
-      email: correo.trim(),
-      password: clave,
-    })
+    const { error } = await supabase.auth.signInWithPassword({ email: correo.trim(), password: clave })
     setCargando(false)
     if (error) {
+      // Mensaje genérico a propósito: no se dice si falló el correo o la contraseña (RF-008)
       setMensaje('Correo o contraseña incorrectos.')
     } else {
       navigate('/')
@@ -31,40 +31,17 @@ export default function Login() {
         <h1 id="h-login">Iniciar sesión</h1>
         <p className="texto-grande texto-suave">Escriba su correo y su contraseña para entrar.</p>
 
-        {mensaje && <p role="alert" style={{ color: '#b00020', fontWeight: 600 }}>{mensaje}</p>}
+        <Mensaje tipo="error">{mensaje}</Mensaje>
 
         <form className="pila pila--estrecha" onSubmit={manejarLogin}>
-          <div className="campo">
-            <label htmlFor="correo">Correo electrónico <span aria-hidden="true">*</span></label>
-            <input
-              id="correo"
-              type="email"
-              autoComplete="email"
-              placeholder="nombre@correo.com"
-              required
-              value={correo}
-              onChange={(e) => setCorreo(e.target.value)}
-            />
-          </div>
-          <div className="campo">
-            <label htmlFor="clave">Contraseña <span aria-hidden="true">*</span></label>
-            <input
-              id="clave"
-              type="password"
-              autoComplete="current-password"
-              required
-              aria-describedby="clave-ayuda"
-              value={clave}
-              onChange={(e) => setClave(e.target.value)}
-            />
-            <p className="campo__ayuda" id="clave-ayuda">Use la contraseña que eligió al registrarse.</p>
-          </div>
+          <CampoFormulario id="correo" etiqueta="Correo electrónico" requerido type="email" autoComplete="email" placeholder="nombre@correo.com" value={correo} onChange={(e) => setCorreo(e.target.value)} />
+          <CampoFormulario id="clave" etiqueta="Contraseña" requerido ayuda="Use la contraseña que eligió al registrarse." type="password" autoComplete="current-password" value={clave} onChange={(e) => setClave(e.target.value)} />
           <button className="boton boton--primario boton--bloque" type="submit" disabled={cargando}>
             {cargando ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
 
-        <hr style={{ width: '100%', border: 0, borderTop: '2px solid var(--color-linea)' }} />
+        <hr className="separador" />
         <h2>¿Es su primera vez aquí?</h2>
         <div className="grupo-botones grupo-botones--columna">
           <Link className="boton boton--secundario" to="/registro">Crear mi cuenta de candidato</Link>

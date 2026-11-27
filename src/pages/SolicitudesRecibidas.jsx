@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import EtiquetaEstatus from '../components/EtiquetaEstatus'
+import Mensaje from '../components/Mensaje'
 
 export default function SolicitudesRecibidas() {
   const { id } = useParams()
   const [solicitudes, setSolicitudes] = useState([])
   const [tituloVacante, setTituloVacante] = useState('')
   const [cargando, setCargando] = useState(true)
+  const [error, setError] = useState('')
 
   async function cargar() {
     setCargando(true)
@@ -28,14 +31,10 @@ export default function SolicitudesRecibidas() {
   }, [id])
 
   async function actualizarEstatus(solicitudId, nuevoEstatus) {
-    await supabase.from('solicitudes').update({ estatus: nuevoEstatus }).eq('id', solicitudId)
+    setError('')
+    const { error: errorUpdate } = await supabase.from('solicitudes').update({ estatus: nuevoEstatus }).eq('id', solicitudId)
+    if (errorUpdate) setError('No se pudo cambiar el estatus. Intente de nuevo.')
     cargar()
-  }
-
-  function claseEstatus(estatus) {
-    if (estatus === 'Aceptada') return 'etiqueta-estatus--aceptada'
-    if (estatus === 'Rechazada') return 'etiqueta-estatus--rechazada'
-    return 'etiqueta-estatus--revision'
   }
 
   return (
@@ -43,6 +42,8 @@ export default function SolicitudesRecibidas() {
       <Link className="enlace-volver" to="/empresa/vacantes">← Volver a mis vacantes</Link>
       <h1>Solicitudes recibidas</h1>
       {tituloVacante && <p className="texto-grande texto-suave">Vacante: {tituloVacante}</p>}
+
+      <Mensaje tipo="error">{error}</Mensaje>
 
       {cargando ? (
         <p role="status">Cargando candidatos...</p>
@@ -61,9 +62,7 @@ export default function SolicitudesRecibidas() {
                   <p className="texto-grande">{s.candidato?.experiencia}</p>
                   <p className="texto-suave">Recibida el {new Date(s.creada_en).toLocaleDateString('es-MX')}</p>
                 </div>
-                <p className={`etiqueta-estatus ${claseEstatus(s.estatus)} tarjeta-solicitud__estatus`}>
-                  <span className="solo-lectores">Estatus: </span>{s.estatus}
-                </p>
+                <EtiquetaEstatus valor={s.estatus} />
                 <div className="grupo-botones">
                   <button className="boton boton--secundario" type="button" onClick={() => actualizarEstatus(s.id, 'En revisión')}>
                     En revisión

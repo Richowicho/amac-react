@@ -2,11 +2,14 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
+import EtiquetaEstatus from '../components/EtiquetaEstatus'
+import Mensaje from '../components/Mensaje'
 
 export default function EmpresaVacantes() {
   const { sesion } = useAuth()
   const [vacantes, setVacantes] = useState([])
   const [cargando, setCargando] = useState(true)
+  const [error, setError] = useState('')
 
   async function cargar() {
     if (!sesion?.user.id) return
@@ -25,14 +28,10 @@ export default function EmpresaVacantes() {
   }, [sesion?.user.id])
 
   async function cambiarEstado(id, nuevoEstado) {
-    await supabase.from('vacantes').update({ estado: nuevoEstado }).eq('id', id)
+    setError('')
+    const { error: errorUpdate } = await supabase.from('vacantes').update({ estado: nuevoEstado }).eq('id', id)
+    if (errorUpdate) setError('No se pudo cambiar el estado de la vacante. Intente de nuevo.')
     cargar()
-  }
-
-  function claseEstado(estado) {
-    if (estado === 'activa') return 'etiqueta-estatus--activa'
-    if (estado === 'pausada') return 'etiqueta-estatus--revision'
-    return 'etiqueta-estatus--cerrada'
   }
 
   return (
@@ -44,6 +43,8 @@ export default function EmpresaVacantes() {
         </div>
         <Link className="boton boton--acento" to="/empresa/publicar">Publicar nueva vacante</Link>
       </div>
+
+      <Mensaje tipo="error">{error}</Mensaje>
 
       {cargando ? (
         <p role="status">Cargando vacantes...</p>
@@ -62,9 +63,7 @@ export default function EmpresaVacantes() {
                       Publicada el {new Date(v.creada_en).toLocaleDateString('es-MX')} · {totalSolicitudes} {totalSolicitudes === 1 ? 'solicitud' : 'solicitudes'}
                     </p>
                   </div>
-                  <p className={`etiqueta-estatus ${claseEstado(v.estado)} tarjeta-solicitud__estatus`}>
-                    <span className="solo-lectores">Estado: </span>{v.estado}
-                  </p>
+                  <EtiquetaEstatus valor={v.estado} titulo="Estado" />
                   <div className="grupo-botones">
                     <Link className="boton boton--primario" to={`/empresa/vacantes/${v.id}/solicitudes`}>
                       Ver solicitudes

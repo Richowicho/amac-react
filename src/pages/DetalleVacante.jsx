@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
+import Mensaje from '../components/Mensaje'
 
 export default function DetalleVacante() {
   const { id } = useParams()
@@ -9,6 +10,7 @@ export default function DetalleVacante() {
   const [vacante, setVacante] = useState(null)
   const [cargando, setCargando] = useState(true)
   const [mensaje, setMensaje] = useState('')
+  const [tipoMensaje, setTipoMensaje] = useState('info')
   const [postulando, setPostulando] = useState(false)
 
   useEffect(() => {
@@ -23,9 +25,14 @@ export default function DetalleVacante() {
       })
   }, [id])
 
+  function mostrar(texto, tipo) {
+    setMensaje(texto)
+    setTipoMensaje(tipo)
+  }
+
   async function postularme() {
     if (!sesion) {
-      setMensaje('Inicie sesión como candidato para postularse.')
+      mostrar('Inicie sesión como candidato para postularse.', 'info')
       return
     }
     setPostulando(true)
@@ -36,14 +43,16 @@ export default function DetalleVacante() {
     setPostulando(false)
 
     if (error?.code === '23505') {
-  setMensaje('Ya te postulaste a esta vacante.')
-} else if (error?.code === '42501') {
-  setMensaje('Tu registro aún no ha sido aprobado por AMAC o tu cuenta no es de candidato.')
-} else if (error) {
-  setMensaje(`Error al postularse: ${error.message}`)
-} else {
-  setMensaje('¡Listo! Tu solicitud fue enviada.')
-}
+      // restricción unique (vacante_id, candidato_id): RF-004, no se puede aplicar dos veces
+      mostrar('Ya te postulaste a esta vacante.', 'info')
+    } else if (error?.code === '42501') {
+      // la política RLS rechazó el insert: el candidato no está aprobado (RF-054)
+      mostrar('Tu registro aún no ha sido aprobado por AMAC o tu cuenta no es de candidato.', 'error')
+    } else if (error) {
+      mostrar(`Error al postularse: ${error.message}`, 'error')
+    } else {
+      mostrar('¡Listo! Tu solicitud fue enviada.', 'exito')
+    }
   }
 
   if (cargando) return <div className="contenedor"><p role="status">Cargando detalles...</p></div>
@@ -94,11 +103,7 @@ export default function DetalleVacante() {
               </a>
             )}
 
-            {mensaje && (
-              <p role="status" style={{ fontWeight: 600, marginTop: '0.5rem' }}>
-                {mensaje}
-              </p>
-            )}
+            <Mensaje tipo={tipoMensaje}>{mensaje}</Mensaje>
           </div>
 
           <div className="pila pila--estrecha" style={{ order: 1 }}>
