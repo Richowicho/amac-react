@@ -6,8 +6,8 @@ Empezamos con el diseño en Figma, después lo hicimos en HTML y CSS (Entrega 2)
 
 - Sitio: https://amac-react-alpha.vercel.app
 - Figma: https://www.figma.com/design/HhhZoudePl9a0XC1QkL7iF
-- Video: _(falta pegar el enlace)_
-- Diapositivas: _(falta pegar el enlace)_
+- Video: https://www.youtube.com/watch?v=R923U_gzHSg
+- Diapositivas: https://drive.google.com/file/d/15cmSiBzpjtxomKKfxx0uc5ztEP5rAbQC/view?usp=sharing 
 
 ## Equipo
 
@@ -69,7 +69,7 @@ Tenemos tres tablas: `perfiles` (uno por usuario), `vacantes` (las publica una e
 auth.users 1───1 perfiles 1───* vacantes 1───* solicitudes *───1 perfiles (candidato)
 ```
 
-> Falta pegar aquí la captura del diagrama (Supabase → Database → Schema Visualizer).
+**Diagrama de base de datos: https://drive.google.com/file/d/1W9odskSqvygbbAAvlG9RVfh4lwV6lNU8/view?usp=sharing**
 
 Hay reglas que revisa la base de datos y no solo la pantalla. Por ejemplo, nadie puede postularse dos veces a la misma vacante (`unique (vacante_id, candidato_id)`), el sueldo tiene que ser mayor a 0 y la edad estar entre 18 y 120. También hay un trigger, `crear_perfil`, que crea el perfil solo cuando alguien se registra.
 
@@ -90,28 +90,32 @@ Hay reglas que revisa la base de datos y no solo la pantalla. Por ejemplo, nadie
 | solicitudes | El candidato cancela si no está resuelta | Solo desde "Enviada" o "En revisión". |
 | solicitudes | La empresa cambia el estatus | Solo en sus vacantes y solo a En revisión, Aceptada o Rechazada. |
 
-Las rutas protegidas de React solo esconden pantallas. Lo que de verdad protege los datos son estas políticas, así que aunque alguien le mueva al navegador, PostgreSQL no le da datos de otros.
+Además de las políticas RLS, `supabase/esquema.sql` incluye los permisos explícitos de esquema y tabla (`GRANT USAGE ON SCHEMA public` y `GRANT SELECT, INSERT, UPDATE` para `anon` y `authenticated`, exigiendo `aprobado = true` para que una empresa publique vacantes). Las rutas protegidas de React solo esconden pantallas; la seguridad real ocurre en PostgreSQL, así que aunque alguien manipule el navegador, la base de datos bloquea cualquier lectura o escritura no autorizada.
 
 ## Cuentas de prueba
 
-Falta llenar esto. Las cuentas se crean desde la app, y al candidato hay que aprobarlo a mano en Supabase → Table Editor → `perfiles` → `aprobado = true`.
-
 | Rol | Correo | Contraseña |
 |---|---|---|
-| Candidato aprobado | _(correo)_ | _(contraseña)_ |
-| Candidato sin aprobar | _(correo)_ | _(contraseña)_ |
-| Empresa | _(correo)_ | _(contraseña)_ |
+| Candidato aprobado | marioperez@mail.com | 123456 |
+| Candidato sin aprobar | mariana@mail.com | 654321 |
+| Empresa | focoamarillo@mail.com | 123456 |
 
-## Qué hace y qué no
+## Requerimientos funcionales implementados
 
-Ya funciona:
-
-- Ver las vacantes activas, buscar por palabra y filtrar por horario y categoría.
-- Ver el detalle de una vacante (el botón "Llamar" solo sale si tiene teléfono).
-- Registrarse como candidato o como empresa, iniciar y cerrar sesión.
-- Postularse (solo si AMAC te aprobó y sin repetir), ver mis solicitudes y cancelarlas.
-- Para empresas: publicar vacantes, pausarlas, reactivarlas o cerrarlas, ver las solicitudes que llegan y cambiarles el estatus.
-- Rutas protegidas según el rol, más RLS en la base de datos.
+| ID | Requerimiento | Estado | Detalle |
+|---|---|---|---|
+| RF-001 | Listado de vacantes activas | Completo | Consulta en tiempo real desde `public.vacantes` con estado `activa`. |
+| RF-002 | Búsqueda y filtros | Completo | Filtro combinado por palabra clave (título o ubicación), horario y categoría. |
+| RF-003 / RF-051 | Detalle de vacante y llamada | Completo | Muestra todos los datos; el botón "Llamar" (`tel:`) solo aparece si la empresa registró teléfono. |
+| RF-004 / RF-054 | Postularse (solo aprobados) | Completo | Bloquea candidatos con `aprobado = false` y evita duplicados con restricción `UNIQUE`. |
+| RF-005 / RF-006 | Mis solicitudes y cancelar | Completo | Lista postulaciones con estatus en tiempo real y permite cancelar si no está aceptada/rechazada. |
+| RF-008 / RF-009 | Inicio y cierre de sesión | Completo | Autenticación con Supabase Auth y mensaje genérico ante credenciales inválidas. |
+| RF-010 | Rutas protegidas por rol | Completo | `RutaProtegida.jsx` separa vistas de candidato y empresa, respaldado por RLS. |
+| RF-011 / RF-012 / RF-013 | Registro de candidato | Completo | Captura datos personales, experiencia y casilla obligatoria de términos y privacidad. |
+| RF-015 / RF-018 | Registro de empresa | Completo | Registro simplificado de empresa sujeto a aprobación (`aprobado = true`) para publicar. |
+| RF-019 / RF-020 / RF-021 | Publicar y administrar vacantes | Completo | Crear vacantes con validación y botones para pausar, reactivar o cerrar. |
+| RF-022 / RF-024 | Solicitudes recibidas y estatus | Completo | La empresa consulta postulantes y cambia estatus (`En revisión`, `Aceptada`, `Rechazada`). |
+| RF-014 / RF-016 / RF-029 / RF-041 / RF-055 | Funciones opcionales | Pendiente | Panel admin en interfaz (se aprueba en Supabase), edición de perfil, logo, favoritos y recuperar contraseña. |
 
 Lo que todavía no:
 
